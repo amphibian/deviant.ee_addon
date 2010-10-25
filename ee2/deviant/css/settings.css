@@ -1,0 +1,6 @@
+#deviant tr.deviant-global td {
+	/* Hat-tip to NSM Publish Hints */
+	background-color: #FFFCBF;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.496094)), to(rgba(255, 255, 255, 0)));
+	font-weight: bold;
+}
