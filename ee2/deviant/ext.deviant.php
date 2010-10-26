@@ -129,7 +129,6 @@ class Deviant_ext
 		if($cp_call == FALSE)
 		{
 			return $orig_loc;
-			exit();
 		}
 				
 		$type = (!empty($_POST['entry_id'])) ? 'updated' : 'new';
