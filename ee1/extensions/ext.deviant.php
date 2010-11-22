@@ -502,7 +502,7 @@ class Deviant
 			        'method'       => $method,
 			        'hook'         => $hook,
 			        'settings'     => '',
-			        'priority'     => 10,
+			        'priority'     => 99,
 			        'version'      => $this->version,
 			        'enabled'      => "y"
 					)
