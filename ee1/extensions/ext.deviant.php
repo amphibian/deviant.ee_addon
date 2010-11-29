@@ -9,7 +9,7 @@ class Deviant
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0';
+	var $version         = '1.0.1';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
