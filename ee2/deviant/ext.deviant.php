@@ -4,7 +4,7 @@ class Deviant_ext
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0.1';
+	var $version         = '1.0.2';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
@@ -40,15 +40,19 @@ class Deviant_ext
 			'manage' => $this->EE->lang->line('manage_location'),
 		);
 		
-		// Check to see if the Structure module is installed
-		// If so, add it to the locations array
-		$structure = $this->EE->db->query("SELECT module_id 
+		// Check to see if the Structure or Zenbu are installed
+		// If so, add them to the locations array
+		$modules = $this->EE->db->query("SELECT module_name
 			FROM exp_modules 
-			WHERE module_name = 'Structure'");
+			WHERE module_name IN('Structure', 'Zenbu')");
 			
-		if($structure->num_rows() > 0)
+		if($modules->num_rows() > 0)
 		{
-			$vars['locations']['structure'] = $this->EE->lang->line('structure_location');
+			foreach($modules->result_array() as $module)
+			{
+				$slug = strtolower($module['module_name']);
+				$vars['locations'][$slug] = $this->EE->lang->line($slug.'_location');
+			}
 		}
 		
 		// We need a similar array for the global menu
@@ -62,9 +66,9 @@ class Deviant_ext
 			WHERE site_id = '".$this->EE->db->escape_str($this->EE->config->item('site_id'))."' 
 			ORDER BY channel_title ASC");
 			
-		foreach($channels->result_array() as $value)
+		foreach($channels->result_array() as $channel)
 		{
-			extract($value);
+			extract($channel);
 			$vars['channels'][$channel_id] = $channel_title;
 		}
 		
@@ -151,6 +155,19 @@ class Deviant_ext
 			$redirect = 'default';
 		}
 		
+		// Check to see if we came from a filtered entries list
+		parse_str(parse_url($orig_loc, PHP_URL_QUERY), $orig_filters);
+		if(isset($orig_filters['amp;filter']))
+		{
+			$orig_filters = unserialize(base64_decode($orig_filters['amp;filter']));
+			$filters = '';
+			foreach($orig_filters as $param => $value)
+			{
+				$value = ($param == 'keywords') ? base64_encode($value) : $value;
+				$filters .= AMP.$param.'='.$value;
+			}
+		}	
+		
 		switch($redirect)
 		{
 			case 'new':
@@ -168,15 +185,22 @@ class Deviant_ext
 				break;
 			case 'manage':
 				$loc = BASE.AMP.
-				'C=content_edit'.AMP.
-				'channel_id='.$meta['channel_id'];
+				'C=content_edit';
+				if(isset($filters)) $loc .= $filters;
 				break;
 			case 'structure':
 				$loc = BASE.AMP.
 				'C=addons_modules'.AMP.
 				'M=show_module_cp'.AMP.
 				'module=structure';
-				break;	
+				break;
+			case 'zenbu':
+				$loc = BASE.AMP.
+				'C=addons_modules'.AMP.
+				'M=show_module_cp'.AMP.
+				'module=zenbu';
+				if(isset($filters)) $loc .= $filters;
+				break;
 			default:
 				$loc = $orig_loc;
 		}
@@ -216,16 +240,16 @@ class Deviant_ext
 	{
 
 	    $hooks = array(
-	    	'entry_submission_redirect' => 'entry_submission_redirect'
+	    	'entry_submission_redirect'
 	    );
 	    
-	    foreach($hooks as $hook => $method)
+	    foreach($hooks as $hook)
 	    {
 		    $this->EE->db->query($this->EE->db->insert_string('exp_extensions',
 		    	array(
 					'extension_id' => '',
 			        'class'        => ucfirst(get_class($this)),
-			        'method'       => $method,
+			        'method'       => $hook,
 			        'hook'         => $hook,
 			        'settings'     => '',
 			        'priority'     => 99,
