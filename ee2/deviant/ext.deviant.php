@@ -4,7 +4,7 @@ class Deviant_ext
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0.2';
+	var $version         = '1.0.3';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
@@ -127,7 +127,8 @@ class Deviant_ext
 	
 
 	
-	function entry_submission_redirect($entry_id, $meta, $data, $cp_call, $orig_loc) {
+	function entry_submission_redirect($entry_id, $meta, $data, $cp_call, $orig_loc)
+	{
 		
 		// Just continue on if we're not in the control panel
 		if($cp_call == FALSE)
@@ -156,17 +157,24 @@ class Deviant_ext
 		}
 		
 		// Check to see if we came from a filtered entries list
+		$filters = '';
 		parse_str(parse_url($orig_loc, PHP_URL_QUERY), $orig_filters);
 		if(isset($orig_filters['amp;filter']))
 		{
 			$orig_filters = unserialize(base64_decode($orig_filters['amp;filter']));
-			$filters = '';
 			foreach($orig_filters as $param => $value)
 			{
 				$value = ($param == 'keywords') ? base64_encode($value) : $value;
 				$filters .= AMP.$param.'='.$value;
 			}
-		}	
+		}
+		
+		// Uhura support
+        $status = '';
+        if($save_status = $this->EE->input->post('save_status'))
+        {
+            $status = AMP.'status='.$save_status;
+        }
 		
 		switch($redirect)
 		{
@@ -174,19 +182,21 @@ class Deviant_ext
 				$loc = BASE.AMP.
 				'C=content_publish'.AMP.
 				'M=entry_form'.AMP.
-				'channel_id='.$meta['channel_id'];
+				'channel_id='.$meta['channel_id'].
+				$status;
 				break;
 			case 'edit':
 				$loc = BASE.AMP.
 				'C=content_publish'.AMP.
 				'M=entry_form'.AMP.
 				'channel_id='.$meta['channel_id'].AMP.
-				'entry_id='.$entry_id;
+				'entry_id='.$entry_id.
+				$status;
 				break;
 			case 'manage':
 				$loc = BASE.AMP.
-				'C=content_edit';
-				if(isset($filters)) $loc .= $filters;
+				'C=content_edit'.
+				$filters;
 				break;
 			case 'structure':
 				$loc = BASE.AMP.
@@ -198,8 +208,8 @@ class Deviant_ext
 				$loc = BASE.AMP.
 				'C=addons_modules'.AMP.
 				'M=show_module_cp'.AMP.
-				'module=zenbu';
-				if(isset($filters)) $loc .= $filters;
+				'module=zenbu'.
+				$filters;
 				break;
 			default:
 				$loc = $orig_loc;
