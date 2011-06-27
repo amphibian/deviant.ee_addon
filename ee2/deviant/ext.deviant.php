@@ -4,7 +4,7 @@ class Deviant_ext
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0.3';
+	var $version         = '1.0.4';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
@@ -44,7 +44,7 @@ class Deviant_ext
 		// If so, add them to the locations array
 		$modules = $this->EE->db->query("SELECT module_name
 			FROM exp_modules 
-			WHERE module_name IN('Structure', 'Zenbu')");
+			WHERE module_name IN('Structure', 'Zenbu', 'Pages')");
 			
 		if($modules->num_rows() > 0)
 		{
@@ -203,6 +203,12 @@ class Deviant_ext
 				'C=addons_modules'.AMP.
 				'M=show_module_cp'.AMP.
 				'module=structure';
+				break;
+			case 'pages':
+				$loc = BASE.AMP.
+				'C=addons_modules'.AMP.
+				'M=show_module_cp'.AMP.
+				'module=pages';
 				break;
 			case 'zenbu':
 				$loc = BASE.AMP.

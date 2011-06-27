@@ -8,6 +8,7 @@ $lang = array(
 	'manage_location' => 'Manage Entries',
 	'structure_location' => 'Structure Module',
 	'zenbu_location' => 'Zenbu Module',
+	'pages_location' => 'Pages Module',
 	'redirect_after_new' => 'Location after publishing new entries',
 	'redirect_after_update' => 'Location after updating existing entries',
 	'global_redirect' => 'Site-wide Channel Settings',
