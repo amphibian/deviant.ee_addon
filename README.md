@@ -1,6 +1,6 @@
 **Deviant** is an ExpressionEngine add-on that allows you to control, globally or on a per-channel basis, where authors land after publishing or updating entries in the ExpressionEngine control panel.
 
-For each channel/weblog you have six redirect location options for both **new entries** and **updated entries**:
+For each channel/weblog you have seven redirect location options for both **new entries** and **updated entries**:
 
 - **Default Preview** - EE's built-in success screen with field data regurgitated line-by-line
 - **Publish Form** - a new entry screen for the same channel you just published to

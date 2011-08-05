@@ -263,7 +263,6 @@ class Deviant_ext
 	    {
 		    $this->EE->db->query($this->EE->db->insert_string('exp_extensions',
 		    	array(
-					'extension_id' => '',
 			        'class'        => ucfirst(get_class($this)),
 			        'method'       => $hook,
 			        'hook'         => $hook,

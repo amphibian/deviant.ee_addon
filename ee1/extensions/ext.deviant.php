@@ -497,7 +497,6 @@ class Deviant
 	    {
 		    $DB->query($DB->insert_string('exp_extensions',
 		    	array(
-					'extension_id' => '',
 			        'class'        => "deviant",
 			        'method'       => $method,
 			        'hook'         => $hook,
