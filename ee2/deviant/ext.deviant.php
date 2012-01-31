@@ -4,7 +4,7 @@ class Deviant_ext
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0.4';
+	var $version         = '1.0.5';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
@@ -39,7 +39,11 @@ class Deviant_ext
 			'edit' => $this->EE->lang->line('edit_location'),
 			'manage' => $this->EE->lang->line('manage_location'),
 		);
-		
+
+		$vars['delete_locations'] = array(
+			'manage' => $this->EE->lang->line('manage_location')
+		);
+				
 		// Check to see if the Structure or Zenbu are installed
 		// If so, add them to the locations array
 		$modules = $this->EE->db->query("SELECT module_name
@@ -52,6 +56,7 @@ class Deviant_ext
 			{
 				$slug = strtolower($module['module_name']);
 				$vars['locations'][$slug] = $this->EE->lang->line($slug.'_location');
+				$vars['delete_locations'][$slug] = $this->EE->lang->line($slug.'_location');
 			}
 		}
 		
@@ -221,42 +226,32 @@ class Deviant_ext
 				$loc = $orig_loc;
 		}
 		
-		// Create the success notice
-		if($type == 'new')
-		{
-			$message = $this->EE->lang->line('entry_has_been_added');
-		}
-		else
-		{
-			$message = $this->EE->lang->line('entry_has_been_updated');
-		}
-		
-		// If we're going somewhere other than continuing to edit,
-		// provide the entry title and edit link
-		if($redirect != 'edit')
-		{	
-			$message .=	': <strong>'.$meta['title'].'</strong> &nbsp; ';
-			$message .= '<small style="font-weight:normal;">';
-			$message .= '<a href="'.BASE.AMP.
-						'C=content_publish'.AMP.
-						'M=entry_form'.AMP.
-						'channel_id='.$meta['channel_id'].AMP.
-						'entry_id='.$entry_id.'">';
-			$message .= $this->EE->lang->line('edit');
-			$message .= '</a></small>';
-		}
-				
-		$this->EE->session->set_flashdata('message_success', $message);
-		
 		return $loc;
 	}
 	
+	
+	function delete_entries_end()
+	{
+		$site = $this->EE->config->item('site_id');
+		if(isset($this->settings['deviant_delete_'.$site]) && $this->settings['deviant_delete_'.$site] != 'manage')
+		{
+			$loc = BASE.AMP.
+				'C=addons_modules'.AMP.
+				'M=show_module_cp'.AMP.
+				'module='.$this->settings['deviant_delete_'.$site];
+			$this->EE->session->set_flashdata('message_success', lang('entries_deleted'));
+			$this->EE->functions->redirect($loc);
+			exit();
+		}
+	}
+		
 	
 	function activate_extension()
 	{
 
 	    $hooks = array(
-	    	'entry_submission_redirect'
+	    	'entry_submission_redirect',
+	    	'delete_entries_end'
 	    );
 	    
 	    foreach($hooks as $hook)

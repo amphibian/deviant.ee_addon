@@ -12,5 +12,6 @@ $lang = array(
 	'redirect_after_new' => 'Location after publishing new entries',
 	'redirect_after_update' => 'Location after updating existing entries',
 	'global_redirect' => 'Site-wide Channel Settings',
+	'delete_redirect' => 'Location after deleting entries',
 	'save_settings' => 'Save Settings'
 );

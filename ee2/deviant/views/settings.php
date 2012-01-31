@@ -85,6 +85,16 @@
 		}	
 	?>	
 	</tbody>
+	<tbody>
+		<tr class="deviant-global">
+			<td><?php echo $this->EE->lang->line('delete_redirect'); ?></td>
+			<td colspan="2">
+				<?php echo form_dropdown(
+					'deviant_delete_'.$site, $delete_locations, (isset($current['deviant_delete_'.$site])) ? $current['deviant_delete_'.$site] : ''
+				); ?>
+			</td>
+		</tr>
+	</tbody>
 	</table>
 	
 <?php
