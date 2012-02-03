@@ -4,7 +4,7 @@ class Deviant_ext
 {
 	var $settings        = array();
 	var $name            = 'Deviant';
-	var $version         = '1.0.5';
+	var $version         = '1.0.6';
 	var $description     = 'Break away from EE&rsquo;s default entry preview and choose a new path.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/deviant.ee_addon';
@@ -172,6 +172,11 @@ class Deviant_ext
 				$value = ($param == 'keywords') ? base64_encode($value) : $value;
 				$filters .= AMP.$param.'='.$value;
 			}
+		}
+		else
+		{
+			// Filter to this entry's channel
+			$filters .= AMP.'channel_id='.$meta['channel_id'];
 		}
 		
 		// Uhura support
